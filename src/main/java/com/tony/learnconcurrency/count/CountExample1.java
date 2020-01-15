@@ -25,7 +25,7 @@ public class CountExample1 {
             executorService.execute(() -> {
                 try {
                     semaphore.acquire();
-                        add();
+                    add();
                     semaphore.release();
                 } catch (InterruptedException e) {
                     log.error("error", e);
