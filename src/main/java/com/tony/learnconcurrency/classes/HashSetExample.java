@@ -1,10 +1,8 @@
 package com.tony.learnconcurrency.classes;
 
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
+import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,23 +10,24 @@ import java.util.concurrent.Semaphore;
 
 @Slf4j
 @SuppressWarnings("Duplicates")
-public class DateFormatExample2 {
+public class HashSetExample {
 
     static int clientTotal = 5000;
 
     static int threadTotal = 200;
 
-    static DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyyMMdd");
+    static HashSet<Integer> hashSet = new HashSet<>();
 
     public static void main(String[] args) throws InterruptedException {
         ExecutorService executorService = Executors.newCachedThreadPool();
         final Semaphore semaphore = new Semaphore(threadTotal);
         final CountDownLatch countDownLatch = new CountDownLatch(clientTotal);
         for (int i = 0; i < clientTotal; i++) {
+            final int count = i;
             executorService.execute(() -> {
                 try {
                     semaphore.acquire();
-                    dateFormat();
+                    add(count);
                     semaphore.release();
                 } catch (InterruptedException e) {
                     log.error("error", e);
@@ -38,11 +37,12 @@ public class DateFormatExample2 {
         }
         countDownLatch.await();
         executorService.shutdown();
+        log.info("size:{}", hashSet.size());
+        log.info("set:{}", hashSet);
     }
 
-    private static void dateFormat(){
-        final DateTime dateTime = DateTime.parse("20200116", dateTimeFormatter).toDateTime();
-        log.info("dateTime:{}", dateTime);
+    private static void add(int i){
+        hashSet.add(i);
     }
 
 }
